@@ -6,7 +6,7 @@
 
 from pythonping import ping
 import pandas as pd
-import time, os
+import time, os, signal
 import seaborn as sns
 
 
@@ -42,20 +42,27 @@ def get_ping_as_df(url):
                         "url":[url]})
 
 
+# In[ ]:
+
+
+# Function gets executed when keyboard interrupt occures
+def keyboardInterruptHandler(signal, frame):
+    print("Keyboard interrupt - saving files to ping_test.csv.")
+    df_my_ping.to_csv(file_path)
+
+
 # In[53]:
 
 
 # Execution of infinit loop and catch if keyboard interrupts --> afterwarts persistent storage as csv
-try:
-    while True:
-        df_my_ping = df_my_ping.append(get_ping_as_df(url), ignore_index=True)
-        if int(time.strftime("%M", time.localtime()))%10 == 0:
-            df_my_ping.to_csv(file_path)
-        time.sleep(interval)
-except KeyboardInterrupt:
-    print("Keyboard interrupt - saving files to ping_test.csv.")
-    df_my_ping.to_csv(file_path)
-            
+signal.signal(signal.SIGINT, keyboardInterruptHandler)
+
+print("#### Currently analyzing the network ####")
+while True:
+    df_my_ping = df_my_ping.append(get_ping_as_df(url), ignore_index=True)
+    if int(time.strftime("%M", time.localtime()))%10 == 0:
+        df_my_ping.to_csv(file_path)
+    time.sleep(interval)
 
 
 # In[5]:
@@ -75,10 +82,4 @@ sns.lineplot(x=df_my_ping["date"], y=df_my_ping["avg"])
 
 
 df_my_ping.groupby(df_my_ping.date.dt.minute).mean()
-
-
-# In[ ]:
-
-
-
 
