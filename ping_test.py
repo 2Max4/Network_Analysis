@@ -13,6 +13,7 @@ import seaborn as sns
 # In[3]:
 
 
+# User defines webpage and interval
 url = input("Bitte geben Sie die URL ein: ")
 interval = int(input("Wie lange soll das Intervall der Abfragen sein (in Sekunden)? "))
 file_name = "ping_test.csv"
@@ -44,8 +45,7 @@ def get_ping_as_df(url):
 # In[53]:
 
 
-# Ausführen in Infinit Loop und Catchen bei Keyboard Interrupt --> Dann persistent speichern
-# Ausserdem alle 10 Minuten als csv file speichern.
+# Execution of infinit loop and catch if keyboard interrupts --> afterwarts persistent storage as csv
 try:
     while True:
         df_my_ping = df_my_ping.append(get_ping_as_df(url), ignore_index=True)
@@ -61,7 +61,7 @@ except KeyboardInterrupt:
 # In[5]:
 
 
-# Umwandeln aller Dates in das Format Datetime
+# Transform all dates to datetime format
 df_my_ping["date"] = pd.to_datetime(df_my_ping["date"])
 
 
