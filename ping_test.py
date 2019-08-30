@@ -4,11 +4,12 @@
 # In[1]:
 
 
-from pythonping import ping
+import os
+import signal
+import time
 import pandas as pd
-import time, os, signal
+from pythonping import ping
 import seaborn as sns
-
 
 # In[3]:
 

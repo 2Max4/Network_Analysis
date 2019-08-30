@@ -106,3 +106,6 @@ venv.bak/
 #Project Data
 Data/*
 !Data/readMe.txt
+
+#IDE Pycharm
+.idea/*
