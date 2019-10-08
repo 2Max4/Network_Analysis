@@ -5,18 +5,32 @@ import time
 import sys
 import pandas as pd
 from pythonping import ping
+import argparse
+
+
+#User defines webpage and interval
+parser = argparse.ArgumentParser()
+parser.add_argument("--interval", type=int, default=5, help="Intervall in which ping test should be performed")
+parser.add_argument("--ping_target", type=str, default="www.google.de", help="Server that should be pinged")
+parser.add_argument("--threads", type=int, default=1, help="Amount of threads to be used while performing speed test")
+parser.add_argument("--path", type=str, default="Data", help="Folder name in which the results should be stored")
+parser.add_argument("--ping_file_name", type=str, default="ping_test.csv", help="Name of csv file for ping results")
+parser.add_argument("--speed_test_file_name", type=str, default="speed_test.csv", help="Name of csv file for speed test results")
+
+args = parser.parse_args()
+
 
 # User defines webpage and interval
-url = input("Bitte geben Sie die URL für den Ping Test ein: ")
-interval = int(input("Wie lange soll das Intervall der Abfragen sein (in Sekunden)? "))
-ping_file_name = "ping_test.csv"
-speed_test_file_name = "speed_test.csv"
-direc = "Data"
+url = args.ping_target
+interval = args.interval
+ping_file_name = args.ping_file_name
+speed_test_file_name = args.speed_test_file_name
+direc = args.path
 ping_file_path = os.path.join(direc, ping_file_name)
 speed_test_file_path = os.path.join(direc, speed_test_file_name)
 
 # Take 5 threats as default value
-threats = 5
+threats = args.threads
 
 # check if a ping_test file already exists
 if "ping_test.csv" not in os.listdir("./" + direc):
