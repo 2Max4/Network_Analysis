@@ -46,12 +46,12 @@ else:
 
 
 # Main-Part of speed check, take standard values, find best server (would be changeable to) and convert up/downstream
-def get_speed_results_as_df(threads):
+def get_speed_results_as_df(speed_threads):
     s = speedtest.Speedtest()
     s.get_servers()
     s.get_best_server()
-    s.download(threads=threads)
-    s.upload(threads=threads)
+    s.download(threads=speed_threads)
+    s.upload(threads=speed_threads)
     results_dict = s.results.dict()
 
     # Taking relevant values out results_dict{}
@@ -100,8 +100,8 @@ print("#### Currently analyzing the network ####")
 while True:
     test_result = get_ping_as_df(url)
     if test_result["max"].max() > 10:
-        df_my_speed = df_my_speed.append(get_speed_results_as_df(threats), ignore_index=True)
-    df_my_ping = df_my_ping.append(test_result, ignore_index=True)
+        df_my_speed = df_my_speed.append(get_speed_results_as_df(threads), ignore_index=True, sort=False)
+    df_my_ping = df_my_ping.append(test_result, ignore_index=True, sort=False)
     if int(time.strftime("%M", time.localtime())) % 10 == 0:
         df_my_ping.to_csv(ping_file_path)
         df_my_speed.to_csv(speed_test_file_path)
