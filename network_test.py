@@ -16,6 +16,7 @@ parser.add_argument("--threads", type=int, default=1, help="Amount of threads to
 parser.add_argument("--path", type=str, default="Data", help="Folder name in which the results should be stored")
 parser.add_argument("--ping_file_name", type=str, default="ping_test.csv", help="Name of csv file for ping results")
 parser.add_argument("--speed_test_file_name", type=str, default="speed_test.csv", help="Name of csv file for speed test results")
+parser.add_argument("--rm_history", type=)
 
 args = parser.parse_args()
 
