@@ -3,6 +3,7 @@ import signal
 import speedtest
 import time
 import sys
+import shutil
 import pandas as pd
 from pythonping import ping
 import argparse
@@ -16,7 +17,7 @@ parser.add_argument("--threads", type=int, default=1, help="Amount of threads to
 parser.add_argument("--path", type=str, default="Data", help="Folder name in which the results should be stored")
 parser.add_argument("--ping_file_name", type=str, default="ping_test.csv", help="Name of csv file for ping results")
 parser.add_argument("--speed_test_file_name", type=str, default="speed_test.csv", help="Name of csv file for speed test results")
-parser.add_argument("--rm_history", type=)
+parser.add_argument("--clear", type=bool, default=False, help="If set to true all old results will be moved to archive. - Default = False")
 
 args = parser.parse_args()
 
@@ -29,6 +30,45 @@ speed_test_file_name = args.speed_test_file_name
 direc = args.path
 ping_file_path = os.path.join(direc, ping_file_name)
 speed_test_file_path = os.path.join(direc, speed_test_file_name)
+
+# check if old files need to be moved in new dir.
+# If dir archive dosen't exist - create new one
+
+if args.clear is True:
+
+    if os.path.isdir(os.path.join(args.path, "archive")) is False:
+
+        # create archive folder
+        os.mkdir(os.path.join(args.path, "archive"))
+        date = time.strftime("_%Y_%m_%d_%H_%M_%S", time.localtime())
+
+        new_ping_name = "".join((args.ping_file_name.split(".")[0], date, ".", args.ping_file_name.split(".")[1]))
+        new_speed_test_name = "".join((args.speed_test_file_name.split(".")[0], date,".", args.speed_test_file_name.split(".")[1]))
+
+        shutil.copyfile(os.path.join(args.path, args.ping_file_name), os.path.join(args.path, "archive", new_ping_name))
+        shutil.copyfile(os.path.join(args.path, args.speed_test_file_name), os.path.join(args.path, "archive", new_speed_test_name))
+
+    else:
+        #Error da nicht erkannt wird ob ping_file_name in i!
+
+        date = time.strftime("_%Y_%m_%d_%H_%M_%S", time.localtime())
+
+        new_ping_name = "".join((args.ping_file_name.split(".")[0], date, ".", args.ping_file_name.split(".")[1]))
+        new_speed_test_name = "".join(
+            (args.speed_test_file_name.split(".")[0], date, ".", args.speed_test_file_name.split(".")[1]))
+
+        shutil.copyfile(os.path.join(args.path, args.ping_file_name), os.path.join(args.path, "archive", new_ping_name))
+        shutil.copyfile(os.path.join(args.path, args.speed_test_file_name),
+                        os.path.join(args.path, "archive", new_speed_test_name))
+
+
+
+
+
+
+
+
+
 
 # Take 5 threats as default value
 threats = args.threads
