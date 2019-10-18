@@ -110,3 +110,4 @@ Data/*
 #IDE Pycharm
 .idea/*
 
+./webpage/figures/*
