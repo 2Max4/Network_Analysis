@@ -143,7 +143,19 @@ def get_ping_as_df(ping_url):
                              "avg": [99999],
                              "url": [e]})
 
+    except AttributeError as e:
+        print("************************************")
 
+        main_logger.warning(e)
+        traceback.print_exc()
+        print("************************************\n\n")
+
+        # Returns Data Frame with 99999 to show, that there is an error - exception gets pasted into URL
+        return pd.DataFrame({"date": [time.strftime("%d.%m.%Y %H:%M:%S", time.localtime())],
+                             "min": [99999],
+                             "max": [99999],
+                             "avg": [99999],
+                             "url": [e]})
 
 
 # Function gets executed when keyboard interrupt occures and makes sure that all reuslts are saved
