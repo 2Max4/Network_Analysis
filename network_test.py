@@ -14,9 +14,9 @@ main_logger = logging.getLogger("main_logger")
 main_logger.setLevel("WARNING")
 
 
-#User defines webpage and interval
+#User defines webpage and intervall
 parser = argparse.ArgumentParser()
-parser.add_argument("--interval", type=int, default=5, help="Intervall in which ping test should be performed")
+parser.add_argument("--intervall", type=int, default=5, help="Intervall in which ping test should be performed")
 parser.add_argument("--ping_target", type=str, default="www.google.de", help="Server that should be pinged")
 parser.add_argument("--threads", type=int, default=1, help="Amount of threads to be used while performing speed test")
 parser.add_argument("--path", type=str, default="Data", help="Folder name in which the results should be stored")
@@ -27,9 +27,9 @@ parser.add_argument("--clear", type=bool, default=False, help="If set to true al
 args = parser.parse_args()
 
 
-# User defines webpage and interval
+# User defines webpage and intervall
 url = args.ping_target
-interval = args.interval
+intervall = args.intervall
 ping_file_name = args.ping_file_name
 speed_test_file_name = args.speed_test_file_name
 direc = args.path
@@ -168,4 +168,4 @@ while True:
     if int(time.strftime("%M", time.localtime())) % 10 == 0:
         df_my_ping.to_csv(ping_file_path)
         df_my_speed.to_csv(speed_test_file_path)
-    time.sleep(interval)
+    time.sleep(intervall)
