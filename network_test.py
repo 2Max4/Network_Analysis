@@ -129,7 +129,7 @@ def get_ping_as_df(ping_url):
                              "max": [my_ping.rtt_max_ms],
                              "avg": [my_ping.rtt_avg_ms],
                              "url": [ping_url]})
-    except AttributeError as e:
+    except PermissionError as e:
         print("************************************")
 
         main_logger.warning(e)
