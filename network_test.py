@@ -93,30 +93,46 @@ else:
 
 # Main-Part of speed check, take standard values, find best server (would be changeable to) and convert up/downstream
 def get_speed_results_as_df(speed_threads):
-    s = speedtest.Speedtest()
-    s.get_servers()
-    s.get_best_server()
-    s.download(threads=speed_threads)
-    s.upload(threads=speed_threads)
-    results_dict = s.results.dict()
 
-    # Taking relevant values out results_dict{}
-    speed_test_ping = int(results_dict["ping"])
-    downstream = int(results_dict["download"]) / 1024
-    upstream = int(results_dict["upload"]) / 1024
-    server_state = results_dict["server"]["country"]
-    sponsor = results_dict["server"]["sponsor"]
-    your_isp = results_dict["client"]["isp"]
+    try:
+        s = speedtest.Speedtest()
+        s.get_servers()
+        s.get_best_server()
+        s.download(threads=speed_threads)
+        s.upload(threads=speed_threads)
+        results_dict = s.results.dict()
 
-    # Return DataFrame filled by up/downstream, address and create timestamp
-    return pd.DataFrame({"date": [time.strftime("%d.%m.%Y %H:%M:%S",
-                                                time.localtime())],
-                         "ping": [speed_test_ping],
-                         "downstream": [downstream],
-                         "upstream": [upstream],
-                         "address": [server_state],
-                         "sponsor": [sponsor],
-                         "your_isp": [your_isp]})
+        # Taking relevant values out results_dict{}
+        speed_test_ping = int(results_dict["ping"])
+        downstream = int(results_dict["download"]) / 1024
+        upstream = int(results_dict["upload"]) / 1024
+        server_state = results_dict["server"]["country"]
+        sponsor = results_dict["server"]["sponsor"]
+        your_isp = results_dict["client"]["isp"]
+
+        # Return DataFrame filled by up/downstream, address and create timestamp
+        return pd.DataFrame({"date": [time.strftime("%d.%m.%Y %H:%M:%S",
+                                                    time.localtime())],
+                             "ping": [speed_test_ping],
+                             "downstream": [downstream],
+                             "upstream": [upstream],
+                             "address": [server_state],
+                             "sponsor": [sponsor],
+                             "your_isp": [your_isp]})
+    except Exception as e:
+        print("************************************")
+        main_logger.warning(e)
+        traceback.print_exc()
+        print("************************************\n\n")
+
+        return pd.DataFrame({"date": [time.strftime("%d.%m.%Y %H:%M:%S",
+                                                    time.localtime())],
+                             "ping": [99999],
+                             "downstream": [99999],
+                             "upstream": [99999],
+                             "address": [e],
+                             "sponsor": [e],
+                             "your_isp": [e]})
 
 
 # Function that performs ping test and returns Data Frame
