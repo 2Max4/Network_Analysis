@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Network analysis</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+    $(function(){
+      $("#fig_network_speeds_under_upper_bound").load("figures/fig_network_speeds_under_upper_bound.html");
+    });
+    </script>
 </head>
-<body>
 
-<div w3-include-html="figures/fig_network_speeds_under_upper_bound.html"></div>
+
+<body>
+<div id="fig_network_speeds_under_upper_bound"></div>
 
 </body>
 </html>
