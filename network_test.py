@@ -7,6 +7,11 @@ import shutil
 import pandas as pd
 from pythonping import ping
 import argparse
+import logging
+import traceback
+
+main_logger = logging.getLogger("main_logger")
+main_logger.setLevel("WARNING")
 
 
 #User defines webpage and interval
@@ -116,12 +121,29 @@ def get_speed_results_as_df(speed_threads):
 
 # Function that performs ping test and returns Data Frame
 def get_ping_as_df(ping_url):
-    my_ping = ping(ping_url)
-    return pd.DataFrame({"date": [time.strftime("%d.%m.%Y %H:%M:%S", time.localtime())],
-                         "min": [my_ping.rtt_min_ms],
-                         "max": [my_ping.rtt_max_ms],
-                         "avg": [my_ping.rtt_avg_ms],
-                         "url": [ping_url]})
+    try:
+        my_ping = ping(ping_url)
+
+        return pd.DataFrame({"date": [time.strftime("%d.%m.%Y %H:%M:%S", time.localtime())],
+                             "min": [my_ping.rtt_min_ms],
+                             "max": [my_ping.rtt_max_ms],
+                             "avg": [my_ping.rtt_avg_ms],
+                             "url": [ping_url]})
+    except AttributeError as e:
+        print("************************************")
+
+        main_logger.warning(e)
+        traceback.print_exc()
+        print("************************************\n\n")
+
+        # Returns Data Frame with 99999 to show, that there is an error - exception gets pasted into URL
+        return pd.DataFrame({"date": [time.strftime("%d.%m.%Y %H:%M:%S", time.localtime())],
+                             "min": [99999],
+                             "max": [99999],
+                             "avg": [99999],
+                             "url": [e]})
+
+
 
 
 # Function gets executed when keyboard interrupt occures and makes sure that all reuslts are saved
