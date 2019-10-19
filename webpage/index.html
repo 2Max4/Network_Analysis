@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Network analysis</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script>
-    $(function(){
-      $("#fig_network_speeds_under_upper_bound").load("figures/fig_network_speeds_under_upper_bound.html");
-    });
-    </script>
+  <meta charset="UTF-8">
+  <title>NA Dashboard</title>
+
 </head>
 
+<p> Testmessage: #1 </p>
 
 <body>
-<div id="fig_network_speeds_under_upper_bound"></div>
+  <p>Network speeds under defined ping</p>
+  <div id="network_speeds">
+      <iframe src="figures/fig_network_speeds_under_upper_bound.html" width=800 height=500></iframe>
+  </div>
+  <div id="ping_times_w_outliers">
+      <iframe src="figures/fig_ping_times_with_extreme_outliers.html" width=800 height=500></iframe>
+  </div>
+  <div id="ping_times_wo_outliers">
+      <iframe src="figures/fig_ping_times_without_extreme_outliers.html" width=800 height=500></iframe>
+  </div>
 
 </body>
+
 </html>
