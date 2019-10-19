@@ -16,7 +16,7 @@ main_logger.setLevel("WARNING")
 
 
 # Create PingTest class
-class PingTest:
+class NetworkTest:
 
     def __init__(self):
 
@@ -82,13 +82,13 @@ class PingTest:
                                 os.path.join(args.path, "archive", new_speed_test_name))
 
         # check if a ping_test file already exists
-        if "ping_test.csv" not in os.listdir("./" + self.direc):
+        if "ping_test.csv" not in os.listdir("./" + self.path):
             self.df_my_ping = pd.DataFrame(columns=["date", "min", "max", "avg", "url"])
         else:
             self.df_my_ping = pd.read_csv(self.ping_file_path, index_col=0)
 
         # Check if speed_test file already exists and create dataframe
-        if self.speed_test_file_name not in os.listdir("./" + self.direc):
+        if self.speed_test_file_name not in os.listdir("./" + self.path):
             self.df_my_speed = pd.DataFrame(
                 columns=["date", "ping", "downstream", "upstream", "serverState", "sponsor", "your_isp"])
         else:
@@ -210,10 +210,10 @@ class PingTest:
             self.df_my_speed.to_csv(self.speed_test_file_path)
             print("\n**************************\n\n"
                   "*** Press Controle -C to finally exit ***"
-                  "n**************************\n")
+                  "\n**************************\n")
 
 
-my_ping_test = PingTest()
+my_ping_test = NetworkTest()
 
 # run network test in infinite loop
 my_ping_test.run_network_test()
