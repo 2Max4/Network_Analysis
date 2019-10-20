@@ -9,6 +9,7 @@ from pythonping import ping
 import argparse
 import logging
 import traceback
+from visuals import InteractivePlots
 
 # define logger
 main_logger = logging.getLogger("main_logger")
@@ -212,6 +213,32 @@ class NetworkTest:
                   "*** Press Controle -C to finally exit ***"
                   "\n**************************\n")
 
+    def run_network_test_and_generate_graphs(self):
+        visuals = InteractivePlots()
+        print("#### Currently analyzing the network ####")
+        try:
+            while True:
+                test_result = self.get_ping_as_df()
+                if test_result["max"].max() > 10:
+                    self.df_my_speed = self.df_my_speed.append(self.get_speed_results_as_df(),
+                                                               ignore_index=True, sort=False)
+                self.df_my_ping = self.df_my_ping.append(test_result, ignore_index=True, sort=False)
+                if int(time.strftime("%M", time.localtime())) % 10 == 0:
+                    self.to_csv(self.ping_file_path)
+                    self.df_my_speed.to_csv(self.speed_test_file_path)
+                    visuals.generate_and_save_all_plots()
+                time.sleep(self.interval)
+        except KeyboardInterrupt:
+            print("\n**************************\n\n"
+                  "*** Keyboard interrupt *** \n \n**************************\n")
+            print("Saving files to " + str(self.ping_file_path) + ".")
+            self.df_my_ping.to_csv(self.ping_file_path)
+            print("Saving files to " + str(self.speed_test_file_path) + ".")
+            self.df_my_speed.to_csv(self.speed_test_file_path)
+            visuals.generate_and_save_all_plots()
+            print("\n**************************\n\n"
+                  "*** Press Controle -C to finally exit ***"
+                  "\n**************************\n")
 
 my_ping_test = NetworkTest()
 
