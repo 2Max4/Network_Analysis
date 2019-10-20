@@ -67,14 +67,6 @@ if args.clear is True:
                         os.path.join(args.path, "archive", new_speed_test_name))
 
 
-
-
-
-
-
-
-
-
 # Take 5 threats as default value
 threats = args.threads
 
@@ -145,21 +137,7 @@ def get_ping_as_df(ping_url):
                              "max": [my_ping.rtt_max_ms],
                              "avg": [my_ping.rtt_avg_ms],
                              "url": [ping_url]})
-    except PermissionError as e:
-        print("************************************")
-
-        main_logger.warning(e)
-        traceback.print_exc()
-        print("************************************\n\n")
-
-        # Returns Data Frame with 99999 to show, that there is an error - exception gets pasted into URL
-        return pd.DataFrame({"date": [time.strftime("%d.%m.%Y %H:%M:%S", time.localtime())],
-                             "min": [99999],
-                             "max": [99999],
-                             "avg": [99999],
-                             "url": [e]})
-
-    except AttributeError as e:
+    except Exception as e:
         print("************************************")
 
         main_logger.warning(e)
