@@ -27,7 +27,7 @@ else:
 
 class InteractivePlots:
 
-    def __init__(self, upper_ping_issue_bound):
+    def __init__(self):
 
         # Load basic configurations
         config = configparser.ConfigParser()
@@ -67,8 +67,8 @@ class InteractivePlots:
             sys.exit(0)
 
         # Clear data from issues
-        self.df_ping = self.df_ping[self.df_ping["max"] != upper_ping_issue_bound]
-        self.df_speed_test = self.df_speed_test[self.df_speed_test["ping"] != upper_ping_issue_bound]
+        self.df_ping = self.df_ping[self.df_ping["max"] != self.upper_ping_issue_bound]
+        self.df_speed_test = self.df_speed_test[self.df_speed_test["ping"] != self.upper_ping_issue_bound]
 
     def generate_graph_ping_times_with_extreme_outliers(self):
         fig_all_max_ping = hv.Curve((self.df_ping["date"], self.df_ping["max"]),
@@ -100,7 +100,7 @@ class InteractivePlots:
 
         fig_ping_highlight_max = hv.Scatter(
             (self.df_ping["date"][self.df_ping["max"] > self.upper_acceptable_ping_bound][self.df_ping["max"] < 1000],
-             self.df_ping["max"][self.df_ping["max"] > self.upper_acceptable_ping_bound][df_ping["max"] < 1000]),
+             self.df_ping["max"][self.df_ping["max"] > self.upper_acceptable_ping_bound][self.df_ping["max"] < 1000]),
             "Date",
             "Max_Ping_Time",
             label="Highlight pings over {} ms".format(str(self.upper_acceptable_ping_bound))
