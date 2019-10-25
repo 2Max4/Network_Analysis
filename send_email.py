@@ -1,10 +1,11 @@
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from getpass import getpass
 
-sender_from_email = "sender@gmail.com"
-receiver_to_email = "receiver@gmail.com"
-password = input("Type your password and hit enter:")
+sender_from_email = input("Type email address for login:")
+receiver_to_email = input("Type email address for receiving the report:")
+password = getpass("Type your password for login to email account and hit enter:")
 
 message = MIMEMultipart("alternative")
 message["Subject"] = "Network Analysis Report"
@@ -16,7 +17,7 @@ email_content_html = """\
 <html>
   <body>
     <p>Hi,<br>
-       Here is your Netwrok Analysis Report.<br>
+       Here is your Network Analysis Report.<br>
     </p>
   </body>
 </html>
