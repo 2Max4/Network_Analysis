@@ -9,13 +9,24 @@ from getpass import getpass
 main_logger = logging.getLogger("main_logger")
 main_logger.setLevel("WARNING")
 
+
 class SendEmail:
-    def sendEmail(self):
+    """Send Mail class enables sending Emails with Network reports to defined email address."""
+
+    def __init__(self):
+        self.sender_from_email = ""
+        self.receiver_to_email = ""
+        self.password = ""
+
+    def send_email(self):
+
+        # Checks if self.parameters are set - if not - information gathered with promt
+        if self.sender_from_email == "":
+            self.sender_from_email = input("Type email address for login:")
+            self.receiver_to_email = input("Type email address for receiving the report:")
+            self.password = getpass("Type your password for login to email account and hit enter:")
+
         try:
-            sender_from_email = input("Type email address for login:")
-            receiver_to_email = input("Type email address for receiving the report:")
-            password = getpass("Type your password for login to email account and hit enter:")
-            
             message = MIMEMultipart("alternative")
             message["Subject"] = "Network Analysis Report"
             message["From"] = sender_from_email
@@ -26,7 +37,7 @@ class SendEmail:
                 raw_html = report_file.readlines()
                 email_content_html_format = """""".join(raw_html)
             
-            #network_speeds
+            # network_speeds
             network_speeds_report_file = "webpage/figures/fig_network_speeds_under_upper_bound.html"
             network_speeds_content_html = """"""
             try:
@@ -36,7 +47,7 @@ class SendEmail:
             except IOError:
                 print('File is not accessible - ' + network_speeds_report_file)
             
-            #ping_times_w_outliers
+            # ping_times_w_outliers
             ping_times_w_outliers_report_file = "webpage/figures/fig_ping_times_with_extreme_outliers.html"
             ping_times_w_outliers_content_html = """"""
             try:
@@ -46,7 +57,7 @@ class SendEmail:
             except IOError:
                 print('File is not accessible - ' + ping_times_w_outliers_content_html)
             
-            #ping_times_wo_outliers
+            # ping_times_wo_outliers
             ping_times_wo_outliers_report_file = "webpage/figures/fig_ping_times_without_extreme_outliers.html"
             ping_times_wo_outliers_content_html = """"""
             try:
@@ -77,5 +88,6 @@ class SendEmail:
             traceback.print_exc()
             print("************************************\n\n")
 
+
 send_email_report = SendEmail()
-send_email_report.sendEmail()
+send_email_report.send_email()
