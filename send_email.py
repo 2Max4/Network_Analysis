@@ -33,8 +33,8 @@ class SendEmail:
         try:
             message = MIMEMultipart("alternative")
             message["Subject"] = "Network Analysis Report"
-            message["From"] = sender_from_email
-            message["To"] = receiver_to_email
+            message["From"] = self.sender_from_email
+            message["To"] = self.receiver_to_email
             
             # Create the HTML version of email content message
             with open("webpage/mail_format.html") as report_file:
@@ -81,9 +81,9 @@ class SendEmail:
             # Create secure connection with SMTP server and send email
             context = ssl.create_default_context()
             with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-                server.login(sender_from_email, password)
+                server.login(self.sender_from_email, self.password)
                 server.sendmail(
-                    sender_from_email, receiver_to_email, message.as_string()
+                    self.sender_from_email, self.receiver_to_email, message.as_string()
                 )
         except Exception as e:
             print("************************************")
