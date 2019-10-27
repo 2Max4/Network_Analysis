@@ -5,6 +5,8 @@ import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from getpass import getpass
+import schedule
+import time
 
 # define logger
 main_logger = logging.getLogger("main_logger")
@@ -18,6 +20,7 @@ class SendEmail:
         self.sender_from_email = ""
         self.receiver_to_email = ""
         self.password = ""
+        self.report_interval
 
     def send_email(self):
 
@@ -88,6 +91,16 @@ class SendEmail:
             main_logger.warning(e)
             traceback.print_exc()
             print("************************************\n\n")
+
+    def send_weekly_report(self):
+        """""Sends weekly reports on monday morning at 07:30 to predefined email address."""
+        schedule.every().monday.at("7:30").do(self.send_email())
+
+        # Actually runs job on
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
 
 # Example usage:
 # send_email_report = SendEmail()
