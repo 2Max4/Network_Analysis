@@ -89,6 +89,9 @@ class SendEmail:
             traceback.print_exc()
             print("************************************\n\n")
 
-
-send_email_report = SendEmail()
-send_email_report.send_email()
+# Example usage:
+# send_email_report = SendEmail()
+# send_email_report.sender_from_email = "for_example@gmail.com"
+# send_email_report.receiver_to_email = "for_example2@gmail.com"
+# send_email_report.password = "highly_secure"
+# send_email_report.send_email()
