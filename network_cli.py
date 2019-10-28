@@ -13,7 +13,7 @@ if __name__ == '__main__':
     email_report.password = getpass("Type your password for login to email account and hit enter:")
 
     # Start thread which does the actual network analysis
-    Thread(target=ntc.InteractivePlots()).start()
+    Thread(target=ntc.NetworkTest().run_network_test_and_generate_graphs()).start()
 
     # Start thread which sends frequent email reports
     Thread(target=email_report.send_weekly_report())

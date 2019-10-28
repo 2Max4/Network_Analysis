@@ -21,16 +21,16 @@ class NetworkTest:
     def __init__(self):
 
         parser = argparse.ArgumentParser()
-        parser.add_argument("--interval", type=int, default=5, help="Interval in which ping test should be performed")
-        parser.add_argument("--ping_target", type=str, default="www.google.de", help="Server that should be pinged")
+        parser.add_argument("--interval", type=int, default=5, help="Interval in which ping test should be performed (in seconds). Default: 5 sec")
+        parser.add_argument("--ping_target", type=str, default="www.google.de", help="Server that should be pinged. Default: www.google.de")
         parser.add_argument("--threads", type=int, default=1,
                             help="Amount of threads to be used while performing speed test")
         parser.add_argument("--path", type=str, default="Data",
-                            help="Folder name in which the results should be stored")
+                            help="Folder name in which the results should be stored. Default: Data")
         parser.add_argument("--ping_file_name", type=str, default="ping_test.csv",
-                            help="Name of csv file for ping results")
+                            help="Name of csv file for ping results. Default: ping_test.csv")
         parser.add_argument("--speed_test_file_name", type=str, default="speed_test.csv",
-                            help="Name of csv file for speed test results")
+                            help="Name of csv file for speed test results. Default: speed_test.csv")
         parser.add_argument("--clear", type=bool, default=False,
                             help="If set to true all old results will be moved to archive. - Default = False")
 
@@ -171,7 +171,7 @@ class NetworkTest:
         self.df_my_speed.to_csv(self.speed_test_file_path)
         sys.exit(0)
 
-    '''Function starts networktest in endless loop. To exit the loop and safe results Ctrl + C must be pressed 
+    '''Function starts networktest in endless loop. To exit the loop and safe results Ctrl + C must be pressed
             twice '''
 
     def run_network_test(self):
@@ -209,7 +209,7 @@ class NetworkTest:
                                                                ignore_index=True, sort=False)
                 self.df_my_ping = self.df_my_ping.append(test_result, ignore_index=True, sort=False)
                 if int(time.strftime("%M", time.localtime())) % 10 == 0:
-                    self.to_csv(self.ping_file_path)
+                    self.df_my_ping.to_csv(self.ping_file_path)
                     self.df_my_speed.to_csv(self.speed_test_file_path)
                     visuals.generate_and_save_all_plots()
                 time.sleep(self.interval)
@@ -231,4 +231,3 @@ class NetworkTest:
 # my_ping_test = NetworkTest()
 # run network test in infinite loop
 # my_ping_test.run_network_test_and_generate_graphs()
-
