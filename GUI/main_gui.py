@@ -1,13 +1,11 @@
 from PyQt5.QtCore import QDateTime, Qt, QTimer
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
-        QDial, QDialog, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
-        QProgressBar, QPushButton, QRadioButton, QScrollBar, QSizePolicy,
-        QSlider, QSpinBox, QStyleFactory, QTableWidget, QTabWidget, QTextEdit,
-        QVBoxLayout, QWidget)
+
+from PyQt5.QtWidgets import (QDialog, QApplication, QLabel, QCheckBox, QHBoxLayout,
+                            QPushButton, QLineEdit, QSpinBox, QFormLayout, QGridLayout,
+                            QStyleFactory)
 import os
 import sys
 import json
-
 FilePath = "./defaults.json"
 
 def loadDefaults(FilePath):
@@ -28,8 +26,6 @@ class Screen(QDialog):
         self.ping_file_name = defaults["ping_file_name"]
         self.speed_test_file_name = defaults["speed_test_file_name"]
         self.clear = defaults["clear"]
-        self.ping_file_path = os.path.join(self.path, self.ping_file_name)
-        self.speed_test_file_path = os.path.join(self.path, self.speed_test_file_name)
 
         self.generateScreen()
 
