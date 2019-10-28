@@ -1,5 +1,4 @@
 import os
-import signal
 import speedtest
 import time
 import sys
@@ -22,7 +21,7 @@ class NetworkTest:
     def __init__(self):
 
         parser = argparse.ArgumentParser()
-        parser.add_argument("--interval", type=int, default=5, help="Intervall in which ping test should be performed")
+        parser.add_argument("--interval", type=int, default=5, help="Interval in which ping test should be performed")
         parser.add_argument("--ping_target", type=str, default="www.google.de", help="Server that should be pinged")
         parser.add_argument("--threads", type=int, default=1,
                             help="Amount of threads to be used while performing speed test")
@@ -226,8 +225,10 @@ class NetworkTest:
                   "*** Press Controle -C to finally exit ***"
                   "\n**************************\n")
 
-my_ping_test = NetworkTest()
 
+# Example Usage
+
+# my_ping_test = NetworkTest()
 # run network test in infinite loop
-my_ping_test.run_network_test_and_generate_graphs()
+# my_ping_test.run_network_test_and_generate_graphs()
 
