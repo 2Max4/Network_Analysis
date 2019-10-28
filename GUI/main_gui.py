@@ -11,6 +11,8 @@ import threading
 
 FilePath = "./defaults.json"
 
+stopMe = "Nope"
+
 class Communicate(QObject):
     myGUI_signal = pyqtSignal(str)
 
@@ -18,7 +20,6 @@ def myThread(callbackFunc):
     # Setup the signal-slot mechanism.
     mySrc = Communicate()
     mySrc.myGUI_signal.connect(callbackFunc)
-
     # Endless loop. You typically want the thread
     # to run forever.
     while(True):
@@ -26,6 +27,9 @@ def myThread(callbackFunc):
         msgForGui = 'This is a message to send to the GUI'
         mySrc.myGUI_signal.emit(msgForGui)
         time.sleep(1.5)
+        print(stopMe)
+        if(stopMe == "Hi"):
+            print("Yooooooo")
 
 def loadDefaults(FilePath):
     with open(FilePath) as data:
@@ -118,7 +122,10 @@ class Screen(QDialog):
         print("Generate Graph Started")
 
     def theCallbackFunc(self, msg):
-        print('the thread has sent this message to the GUI:')
+        # print('the thread has sent this message to the GUI:')
+        global stopMe
+        stopMe = "Hi"
+        print(stopMe)
         print(msg)
         print('---------')
 
