@@ -209,7 +209,7 @@ class NetworkTest:
                                                                ignore_index=True, sort=False)
                 self.df_my_ping = self.df_my_ping.append(test_result, ignore_index=True, sort=False)
                 if int(time.strftime("%M", time.localtime())) % 10 == 0:
-                    self.to_csv(self.ping_file_path)
+                    self.df_my_ping.to_csv(self.ping_file_path)
                     self.df_my_speed.to_csv(self.speed_test_file_path)
                     visuals.generate_and_save_all_plots()
                 time.sleep(self.interval)
