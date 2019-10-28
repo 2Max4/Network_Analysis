@@ -6,17 +6,22 @@ from getpass import getpass
 
 if __name__ == '__main__':
 
-    # Define all parameters in order to send frequent email-reports
-    email_report = SendEmail()
-    email_report.sender_from_email = input("Type email address for login:")
-    email_report.receiver_to_email = input("Type email address for receiving the report:")
-    email_report.password = getpass("Type your password for login to email account and hit enter:")
+    def email_reporting():
+        # Define all parameters in order to send frequent email-reports
+        email_report = SendEmail()
+        email_report.sender_from_email = input("Type email address for login:")
+        email_report.receiver_to_email = input("Type email address for receiving the report:")
+        email_report.password = getpass("Type your password for login to email account and hit enter:")
+        email_report.send_weekly_report()
+
+    # Start thread which does the actual network analysis
+    Thread(target=ntc.NetworkTest().run_network_test_and_generate_graphs()).start()
 
     # Start thread which does the actual network analysis
     Thread(target=ntc.NetworkTest().run_network_test_and_generate_graphs()).start()
 
     # Start thread which sends frequent email reports
-    Thread(target=email_report.send_weekly_report())
+    Thread(target=email_reporting())
 
 
 
