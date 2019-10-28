@@ -6,20 +6,28 @@ from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
         QVBoxLayout, QWidget)
 import os
 import sys
+import json
+
+FilePath = "./defaults.json"
+
+def loadDefaults(FilePath):
+    with open(FilePath) as data:
+        defaults = json.load(data)
+    return defaults
 
 class Screen(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, defaults, parent=None):
         super(Screen, self).__init__(parent)
 
-        self.doPingTest = True
-        self.doSpeedTest = True
-        self.interval = 5
-        self.ping_target = "www.google.de"
-        self.threads = 1
-        self.path = "./../Data"
-        self.ping_file_name = "ping_test.csv"
-        self.speed_test_file_name = "speed_test.csv"
-        self.clear = False
+        self.doPingTest = defaults["doPingTest"]
+        self.doSpeedTest = defaults["doSpeedTest"]
+        self.interval = defaults["interval"]
+        self.ping_target = defaults["ping_target"]
+        self.threads = defaults["threads"]
+        self.path = defaults["path"]
+        self.ping_file_name = defaults["ping_file_name"]
+        self.speed_test_file_name = defaults["speed_test_file_name"]
+        self.clear = defaults["clear"]
         self.ping_file_path = os.path.join(self.path, self.ping_file_name)
         self.speed_test_file_path = os.path.join(self.path, self.speed_test_file_name)
 
@@ -92,6 +100,6 @@ class Screen(QDialog):
         print("Generate Graph Started")
 
 app = QApplication(sys.argv)
-screen = Screen()
+screen = Screen(loadDefaults(FilePath))
 screen.show()
 sys.exit(app.exec_())
