@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QDateTime, Qt, QTimer
+from PyQt5.QtCore import QDateTime, Qt, QTimer, pyqtSignal, QObject
 
 from PyQt5.QtWidgets import (QDialog, QApplication, QLabel, QCheckBox, QHBoxLayout,
                             QPushButton, QLineEdit, QSpinBox, QFormLayout, QGridLayout,
@@ -6,7 +6,26 @@ from PyQt5.QtWidgets import (QDialog, QApplication, QLabel, QCheckBox, QHBoxLayo
 import os
 import sys
 import json
+import time
+import threading
+
 FilePath = "./defaults.json"
+
+class Communicate(QObject):
+    myGUI_signal = pyqtSignal(str)
+
+def myThread(callbackFunc):
+    # Setup the signal-slot mechanism.
+    mySrc = Communicate()
+    mySrc.myGUI_signal.connect(callbackFunc)
+
+    # Endless loop. You typically want the thread
+    # to run forever.
+    while(True):
+        print(time.time())
+        msgForGui = 'This is a message to send to the GUI'
+        mySrc.myGUI_signal.emit(msgForGui)
+        time.sleep(1.5)
 
 def loadDefaults(FilePath):
     with open(FilePath) as data:
@@ -27,6 +46,7 @@ class Screen(QDialog):
         self.speed_test_file_name = defaults["speed_test_file_name"]
         self.clear = defaults["clear"]
 
+        self.startTheThread()
         self.generateScreen()
 
     def createParameterLayout(self):
@@ -96,6 +116,17 @@ class Screen(QDialog):
 
     def generateGraph(self):
         print("Generate Graph Started")
+
+    def theCallbackFunc(self, msg):
+        print('the thread has sent this message to the GUI:')
+        print(msg)
+        print('---------')
+
+    def startTheThread(self):
+        # Create the new thread. The target function is 'myThread'. The
+        # function we created in the beginning.
+        t = threading.Thread(name = 'myThread', target = myThread, args = (self.theCallbackFunc, ))
+        t.start()
 
 app = QApplication(sys.argv)
 screen = Screen(loadDefaults(FilePath))
