@@ -23,3 +23,8 @@ The Folder Data will contain all data that has been collected during the network
 4. Run the test. This can be done using `sudo python3 run_test.py` along with the arguments. The list of valid arguments can be found by running `sudo python3 run_test.py --help`.
 5. After running the test for desired amount of time, send keyboard interrupt by pressing `Ctrl + C` twice. The data should get stored in the `Data` folder while  the graph should get stored in `webpage/figures` folder.
 6. Open `webpage/index.html` in the browser to view the interactive graphs.
+
+##Run Network Analysis
+1. Make sure to complete all steps from the section Getting Started
+2. Run network test with weekly email reporting by using a gmail account: `sudo python3 network_cli.py`
+3. To get further information about possible options use  `sudo python3 network_cli.py --help`
