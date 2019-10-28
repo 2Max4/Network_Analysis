@@ -37,12 +37,14 @@ class SendEmail:
             message["To"] = self.receiver_to_email
             
             # Create the HTML version of email content message
-            with open("webpage/mail_format.html") as report_file:
+            with open(os.path.join("webpage", "mail_format.html")) as report_file:
                 raw_html = report_file.readlines()
                 email_content_html_format = """""".join(raw_html)
             
+            path_webpage_figures = os.path.join ("webpage", "figures")
             # network_speeds
-            network_speeds_report_file = "webpage/figures/fig_network_speeds_under_upper_bound.html"
+            network_speeds_report_file = os.path.join(path_webpage_figures, 
+                                                      "fig_network_speeds_under_upper_bound.html")
             network_speeds_content_html = """"""
             try:
                 with open(network_speeds_report_file) as report_file:
@@ -52,7 +54,8 @@ class SendEmail:
                 print('File is not accessible - ' + network_speeds_report_file)
             
             # ping_times_w_outliers
-            ping_times_w_outliers_report_file = "webpage/figures/fig_ping_times_with_extreme_outliers.html"
+            ping_times_w_outliers_report_file = os.path.join(path_webpage_figures, 
+                                                             "fig_ping_times_with_extreme_outliers.html")
             ping_times_w_outliers_content_html = """"""
             try:
                 with open(ping_times_w_outliers_report_file) as report_file:
@@ -62,7 +65,8 @@ class SendEmail:
                 print('File is not accessible - ' + ping_times_w_outliers_content_html)
             
             # ping_times_wo_outliers
-            ping_times_wo_outliers_report_file = "webpage/figures/fig_ping_times_without_extreme_outliers.html"
+            ping_times_wo_outliers_report_file = os.path.join(path_webpage_figures, 
+                                                             "fig_ping_times_without_extreme_outliers.html")
             ping_times_wo_outliers_content_html = """"""
             try:
                 with open(ping_times_wo_outliers_report_file) as report_file:
