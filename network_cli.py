@@ -1,6 +1,6 @@
 from threading import Thread
 import network_test_class as ntc
-from send_email import SendEmail
+from modules.send_email import SendEmail
 from getpass import getpass
 
 
