@@ -1,10 +1,12 @@
 from tkinter import *
+import modules.network_test_class as ntc
 
 class Screen:
     def __init__(self):
         self.main_screen = Tk()
         self.doPingTest = IntVar()
         self.doSpeedTest = IntVar()
+        self.ntc = ntc.NetworkTest()
 
     def createTest(self):
         Label(self.main_screen, text="Select the test you want to perform.").grid(row=0, sticky=W)
@@ -18,6 +20,7 @@ class Screen:
 
     def startTest(self):
         print("Test Started")
+        self.ntc.run_network_test_and_generate_graphs()
 
     def endTest(self):
         print("Test Ended")
