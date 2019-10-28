@@ -20,7 +20,6 @@ class SendEmail:
         self.sender_from_email = ""
         self.receiver_to_email = ""
         self.password = ""
-        self.report_interval
 
     def send_email(self):
 
