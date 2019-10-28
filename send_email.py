@@ -20,7 +20,6 @@ class SendEmail:
         self.sender_from_email = ""
         self.receiver_to_email = ""
         self.password = ""
-        self.report_interval
 
     def send_email(self):
 
@@ -94,7 +93,7 @@ class SendEmail:
 
     def send_weekly_report(self):
         """""Sends weekly reports on monday morning at 07:30 to predefined email address."""
-        schedule.every().monday.at("7:30").do(self.send_email())
+        schedule.every().monday.at("07:30").do(self.send_email())
 
         # Actually runs job on
         while True:
