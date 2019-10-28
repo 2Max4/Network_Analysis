@@ -9,8 +9,8 @@ from pythonping import ping
 
 
 # User defines webpage and interval
-url = input("Bitte geben Sie die URL ein: ")
-interval = int(input("Wie lange soll das Intervall der Abfragen sein (in Sekunden)? "))
+url = input("Please enter the URL: ")
+interval = int(input("How long should the interval of queries be (in seconds)? "))
 file_name = "ping_test.csv"
 direc = "Data"
 file_path = direc+"/"+file_name
