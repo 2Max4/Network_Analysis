@@ -1,33 +1,47 @@
-from tkinter import *
-import modules.network_test_class as ntc
+from PyQt5.QtCore import QDateTime, Qt, QTimer
+from PyQt5.QtWidgets import (QApplication, QCheckBox, QComboBox, QDateTimeEdit,
+        QDial, QDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QLineEdit,
+        QProgressBar, QPushButton, QRadioButton, QScrollBar, QSizePolicy,
+        QSlider, QSpinBox, QStyleFactory, QTableWidget, QTabWidget, QTextEdit,
+        QVBoxLayout, QWidget)
 
-class Screen:
-    def __init__(self):
-        self.main_screen = Tk()
-        self.doPingTest = IntVar()
-        self.doSpeedTest = IntVar()
-        self.ntc = ntc.NetworkTest()
+class Screen(QDialog):
+    def __init__(self, parent=None):
+        super(Screen, self).__init__(parent)
+        self.main_screen = QApplication.palette()
+        self.doPingTest = True
+        self.doSpeedTest = True
+        self.generateScreen()
 
-    def createTest(self):
-        Label(self.main_screen, text="Select the test you want to perform.").grid(row=0, sticky=W)
-        Checkbutton(self.main_screen, text="Ping Test", variable=self.doPingTest).grid(row=1, sticky=W)
-        Checkbutton(self.main_screen, text="Speed Test", variable=self.doSpeedTest).grid(row=2, sticky=W)
-        Button(text = "Start Test", command = self.startTest).grid(row=3, sticky=W)
-        Button(text = "End Test", command = self.endTest).grid(row=3, column=1, sticky=W)
+    def createTestLayout(self):
+        testLabel = QLabel("Select the test you want to perform: ")
+        pingTestCheckbox = QCheckBox("&Ping Test")
+        speedTestCheckbox = QCheckBox("&Speed Test")
+        testLayout = QHBoxLayout()
+        testLayout.addWidget(testLabel)
+        testLayout.addWidget(pingTestCheckbox)
+        testLayout.addWidget(speedTestCheckbox)
+        return testLayout
 
-    def printVar(self):
-        print(self.doPingTest.get(), self.doSpeedTest.get())
+    def generateScreen(self):
+        testLayout = self.createTestLayout()
+        mainLayout = QGridLayout()
+        mainLayout.addLayout(testLayout, 0, 0, 1, 2)
+        self.setLayout(mainLayout)
+        self.setWindowTitle("Network Test")
+        QApplication.setStyle(QStyleFactory.create('Fusion'))
 
     def startTest(self):
         print("Test Started")
-        self.ntc.run_network_test_and_generate_graphs()
 
     def endTest(self):
         print("Test Ended")
 
     def display(self):
-        self.main_screen.mainloop()
+        pass
 
+import sys
+app = QApplication(sys.argv)
 screen = Screen()
-screen.createTest()
-screen.display()
+screen.show()
+sys.exit(app.exec_())
