@@ -9,12 +9,15 @@ import json
 import time
 import threading
 
+import modules.Communicate as Communicate
+
+Communicate.initializeGlobalVars()
+
+from modules.NetworkTest import NetworkTest as ntc
+
 FilePath = "./defaults.json"
 
-runningTest = False
 
-class Communicate(QObject):
-    GUI_signal = pyqtSignal(str)
 
 class Test:
     def __init__(self, callbackFunc):
@@ -51,8 +54,11 @@ class Screen(QDialog):
         self.speed_test_file_name = defaults["speed_test_file_name"]
         self.clear = defaults["clear"]
 
-        self.test = Test(self.testCallback)
-        self.testThread = threading.Thread(name = 'runTest', target = self.test.runTest, args = ())
+        self.test = ntc(defaults, self.testCallback)
+        self.testThread = threading.Thread(name = 'runTest',
+                                            target = self.test.run_network_test,
+                                            args = (self.doPingTest, self.doSpeedTest)
+                                    )
         self.testThread.daemon = True
         self.testThread.start()
         self.generateScreen()
@@ -118,13 +124,11 @@ class Screen(QDialog):
 
     def startTest(self):
         print("Test Started")
-        global runningTest
-        runningTest = True
+        Communicate.runningTest = True
 
 
     def endTest(self):
-        global runningTest
-        runningTest = False
+        Communicate.runningTest = False
         print("Test Ended")
 
     def generateGraph(self):

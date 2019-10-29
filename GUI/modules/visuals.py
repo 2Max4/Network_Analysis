@@ -5,6 +5,8 @@ import holoviews as hv
 from holoviews import opts, dim, Palette
 import configparser
 
+rel_path = "./../"
+
 # Define default layout of graphs
 hv.extension('bokeh')
 
@@ -18,8 +20,8 @@ opts.defaults(
 
 
 # Initializes the figures path in webpage for the diagram output
-if os.path.isdir(os.path.join("webpage","figures")) is False:
-    os.mkdir(os.path.join("webpage","figures"))
+if os.path.isdir(os.path.join(rel_path, "webpage","figures")) is False:
+    os.mkdir(os.path.join(rel_path, "webpage","figures"))
     print("Path 'figures' created successfully")
 else:
     print("Path 'figures' initialized")
@@ -56,8 +58,8 @@ class InteractivePlots:
             self.acceptable_network_speed = float(config['DEFAULT']['acceptable_network_speed'])
 
         try:
-            self.df_ping = pd.read_csv("Data/ping_test.csv", index_col=0)
-            self.df_speed_test = pd.read_csv("Data/speed_test.csv", index_col=0)
+            self.df_ping = pd.read_csv(rel_path+"Data/ping_test.csv", index_col=0)
+            self.df_speed_test = pd.read_csv(rel_path+"Data/speed_test.csv", index_col=0)
 
             self.df_ping["date"] = pd.to_datetime(self.df_ping["date"], format="%d.%m.%Y %H:%M:%S")
             self.df_speed_test["date"] = pd.to_datetime(self.df_speed_test["date"], format="%d.%m.%Y %H:%M:%S")
@@ -89,7 +91,7 @@ class InteractivePlots:
             title="All Max. Ping Times in ms", padding=0.05)
         # Safe newly generated plot
         hv.save(fig_ping_times_with_extreme_outliers,
-                os.path.join("webpage", "figures",
+                os.path.join(rel_path, "webpage", "figures",
                              "fig_ping_times_with_extreme_outliers.html"),
                 backend='bokeh')
 
@@ -113,7 +115,7 @@ class InteractivePlots:
 
         # Safe newly generated plot
         hv.save(fig_ping_times_without_extreme_outliers,
-                os.path.join("webpage", "figures", "fig_ping_times_without_extreme_outliers.html"), backend='bokeh')
+                os.path.join(rel_path, "webpage", "figures", "fig_ping_times_without_extreme_outliers.html"), backend='bokeh')
 
     def generate_graph_network_speed(self):
         pingbound_network_test = self.df_speed_test["ping"].min()
@@ -157,7 +159,7 @@ class InteractivePlots:
 
         # Safe newly generated plot
         hv.save(fig_network_speeds_under_upper_bound,
-                os.path.join("webpage", "figures",
+                os.path.join(rel_path, "webpage", "figures",
                              "fig_network_speeds_under_upper_bound.html"),
                 backend='bokeh')
 
