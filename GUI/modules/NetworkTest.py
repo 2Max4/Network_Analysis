@@ -35,21 +35,25 @@ class NetworkTest:
 
         self.doPingTest = True
         self.doSpeedTest = True
-        
+
         self.runningTest = False
         self.createDataFrames()
         self.src = Communicate()
         self.src.GUI_signal.connect(callbackFunc)
 
-    def updateTestVariables(defaults):
-        self.interval = defaults["interval"]
-        self.ping_target = defaults["ping_target"]
-        self.threads = defaults["threads"]
-        self.path = defaults["path"]
-        self.ping_file_name = defaults["ping_file_name"]
-        self.speed_test_file_name = defaults["speed_test_file_name"]
-        self.clear = defaults["clear"]
+    def updateTestVariables(self, updatedVariables):
+        print(updatedVariables)
+        self.doPingTest = updatedVariables["doPingTest"]
+        self.doSpeedTest = updatedVariables["doSpeedTest"]
+        self.interval = updatedVariables["interval"]
+        self.ping_target = updatedVariables["ping_target"]
+        self.threads = updatedVariables["threads"]
+        self.path = updatedVariables["path"]
+        self.ping_file_name = updatedVariables["ping_file_name"]
+        self.speed_test_file_name = updatedVariables["speed_test_file_name"]
+        self.clear = updatedVariables["clear"]
         self.ping_file_path = os.path.join(self.path, self.ping_file_name)
+        self.speed_test_file_path = os.path.join(self.path, self.speed_test_file_name)
 
     # check if old files need to be moved in new dir.
     # If dir archive dosen't exist - create new one

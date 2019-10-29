@@ -42,35 +42,38 @@ class Screen(QDialog):
         self.generateScreen()
 
     def createParameterLayout(self):
-        pingTargetTextBox = QLineEdit(self.ping_target)
-        pingIntervalSpinBox = QSpinBox()
-        pingIntervalSpinBox.setValue(self.interval)
-        resultFilePathTextBox = QLineEdit(self.path)
-        pingResultFileNameTextBox = QLineEdit(self.ping_file_name)
-        speedResultFileNameTextBox = QLineEdit(self.speed_test_file_name)
-        clearOldResultCheckBox = QCheckBox("Clear Old Results?")
-        clearOldResultCheckBox.setChecked(self.clear)
+        self.pingTargetTextBox = QLineEdit(self.ping_target)
+        self.pingIntervalSpinBox = QSpinBox()
+        self.pingIntervalSpinBox.setValue(self.interval)
+        self.threadsSpinBox = QSpinBox()
+        self.threadsSpinBox.setValue(self.threads)
+        self.resultFilePathTextBox = QLineEdit(self.path)
+        self.pingResultFileNameTextBox = QLineEdit(self.ping_file_name)
+        self.speedResultFileNameTextBox = QLineEdit(self.speed_test_file_name)
+        self.clearOldResultCheckBox = QCheckBox("Clear Old Results?")
+        self.clearOldResultCheckBox.setChecked(self.clear)
 
         parameterLayout = QFormLayout()
-        parameterLayout.addRow("Ping Target: ", pingTargetTextBox)
-        parameterLayout.addRow("Ping Interval: ", pingIntervalSpinBox)
-        parameterLayout.addRow("Results File Path: ", resultFilePathTextBox)
-        parameterLayout.addRow("Ping Test Result File Name: ", pingResultFileNameTextBox)
-        parameterLayout.addRow("Speed Test Result File Name: ", speedResultFileNameTextBox)
-        parameterLayout.addRow(clearOldResultCheckBox)
+        parameterLayout.addRow("Ping Target: ", self.pingTargetTextBox)
+        parameterLayout.addRow("Ping Interval: ", self.pingIntervalSpinBox)
+        parameterLayout.addRow("Threads to use: ", self.threadsSpinBox)
+        parameterLayout.addRow("Results File Path: ", self.resultFilePathTextBox)
+        parameterLayout.addRow("Ping Test Result File Name: ", self.pingResultFileNameTextBox)
+        parameterLayout.addRow("Speed Test Result File Name: ", self.speedResultFileNameTextBox)
+        parameterLayout.addRow(self.clearOldResultCheckBox)
         return parameterLayout
 
     def createTestLayout(self):
         testLabel = QLabel("Select the test you want to perform: ")
-        pingTestCheckbox = QCheckBox("&Ping Test")
-        pingTestCheckbox.setChecked(self.doPingTest)
-        speedTestCheckbox = QCheckBox("&Speed Test")
-        speedTestCheckbox.setChecked(self.doSpeedTest)
+        self.pingTestCheckbox = QCheckBox("&Ping Test")
+        self.pingTestCheckbox.setChecked(self.doPingTest)
+        self.speedTestCheckbox = QCheckBox("&Speed Test")
+        self.speedTestCheckbox.setChecked(self.doSpeedTest)
 
         testLayout = QHBoxLayout()
         testLayout.addWidget(testLabel)
-        testLayout.addWidget(pingTestCheckbox)
-        testLayout.addWidget(speedTestCheckbox)
+        testLayout.addWidget(self.pingTestCheckbox)
+        testLayout.addWidget(self.speedTestCheckbox)
         return testLayout
 
     def creatActionButtonsLayout(self):
@@ -93,15 +96,37 @@ class Screen(QDialog):
         parameterLayout = self.createParameterLayout()
 
         mainLayout = QGridLayout()
-        mainLayout.addLayout(parameterLayout, 0, 0, 5, 2)
-        mainLayout.addLayout(testLayout, 7, 0, 1, 2)
-        mainLayout.addLayout(actionButtonsLayout, 8, 0, 1, 2)
+        mainLayout.addLayout(parameterLayout, 0, 0, 7, 2)
+        mainLayout.addLayout(testLayout, 8, 0, 1, 2)
+        mainLayout.addLayout(actionButtonsLayout, 9, 0, 1, 2)
         self.setLayout(mainLayout)
         self.setWindowTitle("Network Test")
         QApplication.setStyle(QStyleFactory.create('Fusion'))
 
     def startTest(self):
         print("Test Started")
+        self.doPingTest = self.pingTestCheckbox.isChecked()
+        self.doSpeedTest = self.speedTestCheckbox.isChecked()
+        self.interval = self.pingIntervalSpinBox.value()
+        self.ping_target = self.pingTargetTextBox.text()
+        self.threads = self.threadsSpinBox.value()
+        self.path = self.resultFilePathTextBox.text()
+        self.ping_file_name = self.pingResultFileNameTextBox.text()
+        self.speed_test_file_name = self.speedResultFileNameTextBox.text()
+        self.clear = self.clearOldResultCheckBox.isChecked()
+
+        updatedVariables = {
+            "doPingTest": self.doPingTest,
+            "doSpeedTest": self.doSpeedTest,
+            "interval": self.interval,
+            "ping_target": self.ping_target,
+            "threads": self.threads,
+            "path": self.path,
+            "ping_file_name": self.ping_file_name,
+            "speed_test_file_name": self.speed_test_file_name,
+            "clear": self.clear
+        }
+        self.test.updateTestVariables(updatedVariables)
         self.test.startTest()
 
     def endTest(self):
