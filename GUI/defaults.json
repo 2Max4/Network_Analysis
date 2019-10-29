@@ -1,7 +1,7 @@
 {
 	"doPingTest": true,
 	"doSpeedTest": true,
-	"interval": 5,
+	"interval": 1,
 	"ping_target": "www.google.de",
 	"threads": 1,
 	"path": "./../Data",

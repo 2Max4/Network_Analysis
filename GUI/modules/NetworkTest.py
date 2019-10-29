@@ -9,9 +9,12 @@ import argparse
 import logging
 import traceback
 
+from PyQt5.QtCore import pyqtSignal, QObject
+
 from modules.visuals import InteractivePlots
 
-import modules.Communicate as Communicate
+class Communicate(QObject):
+    GUI_signal = pyqtSignal(str)
 
 # define logger
 main_logger = logging.getLogger("main_logger")
@@ -30,8 +33,12 @@ class NetworkTest:
         self.ping_file_path = os.path.join(self.path, self.ping_file_name)
         self.speed_test_file_path = os.path.join(self.path, self.speed_test_file_name)
 
+        self.doPingTest = True
+        self.doSpeedTest = True
+        
+        self.runningTest = False
         self.createDataFrames()
-        self.src = Communicate.Communicate()
+        self.src = Communicate()
         self.src.GUI_signal.connect(callbackFunc)
 
     def updateTestVariables(defaults):
@@ -154,8 +161,15 @@ class NetworkTest:
         self.df_my_speed.to_csv(self.speed_test_file_path)
         sys.exit(0)
 
+    def startTest(self):
+        self.runningTest = True
+
+    def endTest(self):
+        self.runningTest = False
+
+
     '''Function starts networktest in endless loop. To exit the loop and safe results Ctrl + C must be pressed twice '''
-    def run_network_test(self, doPingTest, doSpeedTest):
+    def run_network_test(self):
         if self.clear is True:
             self.archiveFiles()
         print("#### Currently analyzing the network ####")
@@ -163,20 +177,24 @@ class NetworkTest:
         try:
             while True:
                 print("Thread Running " + str(time.time()))
-                if(Communicate.runningTest):
+                msgForGui = 'Message from NetworkTest'
+                self.src.GUI_signal.emit(msgForGui)
+                if(self.runningTest):
                     print("Test is running")
                     notSaved = True
-                    if(doPingTest):
+                    if(self.doPingTest):
                         self.df_my_ping = self.df_my_ping.append(self.get_ping_as_df(), ignore_index=True, sort=False)
-                    if(doSpeedTest):
+                    if(self.doSpeedTest):
                         self.df_my_speed = self.df_my_speed.append(self.get_speed_results_as_df(), ignore_index=True, sort=False)
                 else:
                     print("Test is not running")
                     if(notSaved):
-                        print("Saving files to " + str(self.ping_file_path) + ".")
-                        self.df_my_ping.to_csv(self.ping_file_path)
-                        print("Saving files to " + str(self.speed_test_file_path) + ".")
-                        self.df_my_speed.to_csv(self.speed_test_file_path)
+                        if(self.doPingTest):
+                            print("Saving files to " + str(self.ping_file_path) + ".")
+                            self.df_my_ping.to_csv(self.ping_file_path)
+                        if(self.doSpeedTest):
+                            print("Saving files to " + str(self.speed_test_file_path) + ".")
+                            self.df_my_speed.to_csv(self.speed_test_file_path)
                         notSaved = False
                 time.sleep(self.interval)
 
