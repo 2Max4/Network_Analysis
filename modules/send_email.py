@@ -42,7 +42,10 @@ class SendEmail:
 
             # eventually check if ".." really change the path to one dir. level up!
             path_webpage_figures = os.path.join ("..", "webpage", "figures")
+<<<<<<< HEAD
 
+=======
+>>>>>>> added .. to path_webpage_figures
             # network_speeds
             network_speeds_report_file = os.path.join(path_webpage_figures, 
                                                       "fig_network_speeds_under_upper_bound.html")
