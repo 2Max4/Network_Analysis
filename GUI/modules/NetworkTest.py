@@ -30,13 +30,15 @@ class NetworkTest:
         self.ping_file_name = defaults["ping_file_name"]
         self.speed_test_file_name = defaults["speed_test_file_name"]
         self.clear = defaults["clear"]
-        self.ping_file_path = os.path.join(self.path, self.ping_file_name)
-        self.speed_test_file_path = os.path.join(self.path, self.speed_test_file_name)
+        self.ping_file_path = os.path.join(self.path, "Data", self.ping_file_name)
+        self.speed_test_file_path = os.path.join(self.path, "Data", self.speed_test_file_name)
 
         self.doPingTest = True
         self.doSpeedTest = True
 
         self.runningTest = False
+
+        self.visuals = InteractivePlots(self.path, self.ping_file_path, self.speed_test_file_path)
 
         self.src = Communicate()
         self.src.GUI_signal.connect(callbackFunc)
@@ -52,15 +54,15 @@ class NetworkTest:
         self.ping_file_name = updatedVariables["ping_file_name"]
         self.speed_test_file_name = updatedVariables["speed_test_file_name"]
         self.clear = updatedVariables["clear"]
-        self.ping_file_path = os.path.join(self.path, self.ping_file_name)
-        self.speed_test_file_path = os.path.join(self.path, self.speed_test_file_name)
+        self.ping_file_path = os.path.join(self.path, "Data", self.ping_file_name)
+        self.speed_test_file_path = os.path.join(self.path, "Data", self.speed_test_file_name)
 
     # check if old files need to be moved in new dir.
     # If dir archive dosen't exist - create new one
     def archiveFiles(self):
-        if os.path.isdir(os.path.join(self.path, "archive")) is False:
+        if os.path.isdir(os.path.join(self.path, "Data", "archive")) is False:
             # create archive folder
-            os.mkdir(os.path.join(self.path, "archive"))
+            os.mkdir(os.path.join(self.path, "Data", "archive"))
 
         date = time.strftime("_%Y_%m_%d_%H_%M_%S", time.localtime())
         new_ping_name = "".join(
@@ -68,23 +70,23 @@ class NetworkTest:
         new_speed_test_name = "".join(
             (self.speed_test_file_name.split(".")[0], date, ".", self.speed_test_file_name.split(".")[1]))
 
-        shutil.move(os.path.join(self.path, self.ping_file_name),
-                        os.path.join(self.path, "archive", new_ping_name))
-        shutil.move(os.path.join(self.path, self.speed_test_file_name),
-                        os.path.join(self.path, "archive", new_speed_test_name))
+        shutil.move(os.path.join(self.path, "Data", self.ping_file_name),
+                        os.path.join(self.path, "Data", "archive", new_ping_name))
+        shutil.move(os.path.join(self.path, "Data", self.speed_test_file_name),
+                        os.path.join(self.path, "Data", "archive", new_speed_test_name))
 
     # check if old dataframe exists else create new one
     def createDataFrames(self):
         # check if a ping_test file already exists
         if(self.doPingTest):
-            if self.ping_file_name not in os.listdir(self.path):
+            if self.ping_file_name not in os.listdir(os.path.join(self.path, "Data")):
                 self.df_my_ping = pd.DataFrame(columns=["date", "min", "max", "avg", "url"])
             else:
                 self.df_my_ping = pd.read_csv(self.ping_file_path, index_col=0)
 
         # Check if speed_test file already exists and create dataframe
         if(self.doSpeedTest):
-            if self.speed_test_file_name not in os.listdir(self.path):
+            if self.speed_test_file_name not in os.listdir(os.path.join(self.path, "Data")):
                 self.df_my_speed = pd.DataFrame(
                     columns=["date", "ping", "downstream", "upstream", "serverState", "sponsor", "your_isp"])
             else:
@@ -212,6 +214,6 @@ class NetworkTest:
             traceback.print_exc()
             print("************************************\n\n")
 
-    def generate_and_save_all_plots():
-        visuals = InteractivePlots()
-        visuals.generate_and_save_all_plots()
+    def generate_and_save_all_plots(self):
+        self.visuals.updateTestVariables(self.path, self.ping_file_path, self.speed_test_file_path)
+        self.visuals.generate_and_save_all_plots()

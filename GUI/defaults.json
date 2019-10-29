@@ -4,7 +4,7 @@
 	"interval": 1,
 	"ping_target": "www.google.de",
 	"threads": 1,
-	"path": "./../Data",
+	"path": "./../",
 	"ping_file_name": "ping_test.csv",
 	"speed_test_file_name": "speed_test.csv",
 	"clear": false

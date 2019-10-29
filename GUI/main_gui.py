@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QDateTime, Qt, QTimer, pyqtSignal, QObject
 
-from PyQt5.QtWidgets import (QDialog, QApplication, QLabel, QCheckBox, QHBoxLayout,
+from PyQt5.QtWidgets import (QDialog, QApplication, QLabel, QCheckBox, QHBoxLayout, QVBoxLayout,
                             QPushButton, QLineEdit, QSpinBox, QFormLayout, QGridLayout,
                             QStyleFactory)
 import os
@@ -8,6 +8,7 @@ import sys
 import json
 import time
 import threading
+import webbrowser
 
 from modules.NetworkTest import NetworkTest as ntc
 
@@ -81,24 +82,36 @@ class Screen(QDialog):
         startTestButton.clicked.connect(self.startTest)
         endTestButton = QPushButton("End Test")
         endTestButton.clicked.connect(self.endTest)
-        generateGraphButton = QPushButton("Generate Graph")
-        generateGraphButton.clicked.connect(self.generateGraph)
+
 
         actionButtonsLayout = QHBoxLayout()
         actionButtonsLayout.addWidget(startTestButton)
         actionButtonsLayout.addWidget(endTestButton)
-        actionButtonsLayout.addWidget(generateGraphButton)
         return actionButtonsLayout
+
+    def createRightActionPanel(self):
+        generateGraphButton = QPushButton("Generate Graph")
+        generateGraphButton.clicked.connect(self.generateGraph)
+        viewGraphButton = QPushButton("View Graph")
+        viewGraphButton.clicked.connect(self.viewGraph)
+
+        rightActionLayout = QVBoxLayout()
+        rightActionLayout.addWidget(generateGraphButton)
+        rightActionLayout.addWidget(viewGraphButton)
+        return rightActionLayout
 
     def generateScreen(self):
         testLayout = self.createTestLayout()
         actionButtonsLayout = self.creatActionButtonsLayout()
         parameterLayout = self.createParameterLayout()
+        rightActionLayout = self.createRightActionPanel()
 
         mainLayout = QGridLayout()
         mainLayout.addLayout(parameterLayout, 0, 0, 7, 2)
         mainLayout.addLayout(testLayout, 8, 0, 1, 2)
         mainLayout.addLayout(actionButtonsLayout, 9, 0, 1, 2)
+        mainLayout.addLayout(rightActionLayout, 0, 2, 2, 1)
+
         self.setLayout(mainLayout)
         self.setWindowTitle("Network Test")
         QApplication.setStyle(QStyleFactory.create('Fusion'))
@@ -135,6 +148,11 @@ class Screen(QDialog):
 
     def generateGraph(self):
         print("Generate Graph Started")
+        self.test.generate_and_save_all_plots()
+
+    def viewGraph(self):
+        print("Opening Graph")
+        webbrowser.open('file://' + os.path.realpath(os.path.join(self.path, "webpage", "index.html")))
 
     def testCallback(self, msg):
         # print(msg)

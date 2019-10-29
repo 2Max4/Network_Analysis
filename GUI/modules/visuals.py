@@ -5,32 +5,31 @@ import holoviews as hv
 from holoviews import opts, dim, Palette
 import configparser
 
-rel_path = "./../"
-
-# Define default layout of graphs
-hv.extension('bokeh')
-
-opts.defaults(
-    opts.Bars(xrotation=45, tools=['hover']),
-    opts.BoxWhisker(width=700, xrotation=30, box_fill_color=Palette('Category20')),
-    opts.Curve(width=700, tools=['hover']),
-    opts.GridSpace(shared_yaxis=True),
-    opts.Scatter(width=700, height=500, color=Palette('Category20'), size=dim('growth')+5, tools=['hover'],alpha=0.5, cmap='Set1'),
-    opts.NdOverlay(legend_position='left'))
-
-
 # Initializes the figures path in webpage for the diagram output
-if os.path.isdir(os.path.join(rel_path, "webpage","figures")) is False:
-    os.mkdir(os.path.join(rel_path, "webpage","figures"))
-    print("Path 'figures' created successfully")
-else:
-    print("Path 'figures' initialized")
-
-
 class InteractivePlots:
 
-    def __init__(self):
+    def __init__(self, path, ping_file_path, speed_test_file_path):
 
+        self.path = path
+        self.ping_file_path = ping_file_path
+        self.speed_test_file_name = speed_test_file_path
+
+        # Define default layout of graphs
+        hv.extension('bokeh')
+
+        opts.defaults(
+            opts.Bars(xrotation=45, tools=['hover']),
+            opts.BoxWhisker(width=700, xrotation=30, box_fill_color=Palette('Category20')),
+            opts.Curve(width=700, tools=['hover']),
+            opts.GridSpace(shared_yaxis=True),
+            opts.Scatter(width=700, height=500, color=Palette('Category20'), size=dim('growth')+5, tools=['hover'],alpha=0.5, cmap='Set1'),
+            opts.NdOverlay(legend_position='left'))
+
+        if os.path.isdir(os.path.join(self.path, "webpage","figures")) is False:
+            os.mkdir(os.path.join(self.path, "webpage","figures"))
+            print("Path 'figures' created successfully")
+        else:
+            print("Path 'figures' initialized")
         # Load basic configurations
         config = configparser.ConfigParser()
 
@@ -57,16 +56,25 @@ class InteractivePlots:
             self.upper_ping_issue_bound = float(config['DEFAULT']['upper_ping_issue_bound'])
             self.acceptable_network_speed = float(config['DEFAULT']['acceptable_network_speed'])
 
-        try:
-            self.df_ping = pd.read_csv(rel_path+"Data/ping_test.csv", index_col=0)
-            self.df_speed_test = pd.read_csv(rel_path+"Data/speed_test.csv", index_col=0)
+    def updateTestVariables(self, path, ping_file_path, speed_test_file_path):
 
-            self.df_ping["date"] = pd.to_datetime(self.df_ping["date"], format="%d.%m.%Y %H:%M:%S")
-            self.df_speed_test["date"] = pd.to_datetime(self.df_speed_test["date"], format="%d.%m.%Y %H:%M:%S")
+        self.path = path
+        self.ping_file_path = ping_file_path
+        self.speed_test_file_name = speed_test_file_path
 
-        except:
-            print("Error while searching for files. Please perform network-test first.")
-            sys.exit(0)
+
+    def read_csv(self):
+
+        # try:
+        self.df_ping = pd.read_csv(self.ping_file_path, index_col=0)
+        self.df_speed_test = pd.read_csv(self.speed_test_file_name, index_col=0)
+
+        self.df_ping["date"] = pd.to_datetime(self.df_ping["date"], format="%d.%m.%Y %H:%M:%S")
+        self.df_speed_test["date"] = pd.to_datetime(self.df_speed_test["date"], format="%d.%m.%Y %H:%M:%S")
+        #
+        # except:
+        #     print("Error while searching for files. Please perform network-test first.")
+        #     sys.exit(0)
 
         # Clear data from issues
         self.df_ping = self.df_ping[self.df_ping["max"] != self.upper_ping_issue_bound]
@@ -91,7 +99,7 @@ class InteractivePlots:
             title="All Max. Ping Times in ms", padding=0.05)
         # Safe newly generated plot
         hv.save(fig_ping_times_with_extreme_outliers,
-                os.path.join(rel_path, "webpage", "figures",
+                os.path.join(self.path, "webpage", "figures",
                              "fig_ping_times_with_extreme_outliers.html"),
                 backend='bokeh')
 
@@ -115,7 +123,7 @@ class InteractivePlots:
 
         # Safe newly generated plot
         hv.save(fig_ping_times_without_extreme_outliers,
-                os.path.join(rel_path, "webpage", "figures", "fig_ping_times_without_extreme_outliers.html"), backend='bokeh')
+                os.path.join(self.path, "webpage", "figures", "fig_ping_times_without_extreme_outliers.html"), backend='bokeh')
 
     def generate_graph_network_speed(self):
         pingbound_network_test = self.df_speed_test["ping"].min()
@@ -159,12 +167,14 @@ class InteractivePlots:
 
         # Safe newly generated plot
         hv.save(fig_network_speeds_under_upper_bound,
-                os.path.join(rel_path, "webpage", "figures",
+                os.path.join(self.path, "webpage", "figures",
                              "fig_network_speeds_under_upper_bound.html"),
                 backend='bokeh')
 
     # generates all plots and saves them
     def generate_and_save_all_plots(self):
+        self.read_csv()
         self.generate_graph_network_speed()
         self.generate_graph_ping_times_with_extreme_outliers()
         self.generate_graph_ping_times_without_extreme_outliers()
+        print("Graph Generation Completed!")
