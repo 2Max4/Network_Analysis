@@ -11,25 +11,26 @@ import threading
 
 FilePath = "./defaults.json"
 
-stopMe = "Nope"
+runningTest = False
 
 class Communicate(QObject):
-    myGUI_signal = pyqtSignal(str)
+    GUI_signal = pyqtSignal(str)
 
-def myThread(callbackFunc):
-    # Setup the signal-slot mechanism.
-    mySrc = Communicate()
-    mySrc.myGUI_signal.connect(callbackFunc)
-    # Endless loop. You typically want the thread
-    # to run forever.
-    while(True):
-        print(time.time())
-        msgForGui = 'This is a message to send to the GUI'
-        mySrc.myGUI_signal.emit(msgForGui)
-        time.sleep(1.5)
-        print(stopMe)
-        if(stopMe == "Hi"):
-            print("Yooooooo")
+class Test:
+    def __init__(self, callbackFunc):
+        self.src = Communicate()
+        self.src.GUI_signal.connect(callbackFunc)
+
+    def runTest(self):
+        global runningTest
+        while(True):
+            if(runningTest):
+                print(time.time())
+                msgForGui = 'Test is running'
+                self.src.GUI_signal.emit(msgForGui)
+            else:
+                print("Test is stopped")
+            time.sleep(1.5)
 
 def loadDefaults(FilePath):
     with open(FilePath) as data:
@@ -50,7 +51,10 @@ class Screen(QDialog):
         self.speed_test_file_name = defaults["speed_test_file_name"]
         self.clear = defaults["clear"]
 
-        self.startTheThread()
+        self.test = Test(self.testCallback)
+        self.testThread = threading.Thread(name = 'runTest', target = self.test.runTest, args = ())
+        self.testThread.daemon = True
+        self.testThread.start()
         self.generateScreen()
 
     def createParameterLayout(self):
@@ -114,26 +118,22 @@ class Screen(QDialog):
 
     def startTest(self):
         print("Test Started")
+        global runningTest
+        runningTest = True
+
 
     def endTest(self):
+        global runningTest
+        runningTest = False
         print("Test Ended")
 
     def generateGraph(self):
         print("Generate Graph Started")
 
-    def theCallbackFunc(self, msg):
+    def testCallback(self, msg):
         # print('the thread has sent this message to the GUI:')
-        global stopMe
-        stopMe = "Hi"
-        print(stopMe)
+        global runningTest
         print(msg)
-        print('---------')
-
-    def startTheThread(self):
-        # Create the new thread. The target function is 'myThread'. The
-        # function we created in the beginning.
-        t = threading.Thread(name = 'myThread', target = myThread, args = (self.theCallbackFunc, ))
-        t.start()
 
 app = QApplication(sys.argv)
 screen = Screen(loadDefaults(FilePath))
