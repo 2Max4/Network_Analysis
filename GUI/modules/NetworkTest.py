@@ -37,7 +37,7 @@ class NetworkTest:
         self.doSpeedTest = True
 
         self.runningTest = False
-        self.createDataFrames()
+
         self.src = Communicate()
         self.src.GUI_signal.connect(callbackFunc)
 
@@ -68,25 +68,27 @@ class NetworkTest:
         new_speed_test_name = "".join(
             (self.speed_test_file_name.split(".")[0], date, ".", self.speed_test_file_name.split(".")[1]))
 
-        shutil.copyfile(os.path.join(self.path, args.ping_file_name),
+        shutil.move(os.path.join(self.path, self.ping_file_name),
                         os.path.join(self.path, "archive", new_ping_name))
-        shutil.copyfile(os.path.join(self.path, args.speed_test_file_name),
+        shutil.move(os.path.join(self.path, self.speed_test_file_name),
                         os.path.join(self.path, "archive", new_speed_test_name))
 
     # check if old dataframe exists else create new one
     def createDataFrames(self):
         # check if a ping_test file already exists
-        if self.ping_file_path not in os.listdir(self.path):
-            self.df_my_ping = pd.DataFrame(columns=["date", "min", "max", "avg", "url"])
-        else:
-            self.df_my_ping = pd.read_csv(self.ping_file_path, index_col=0)
+        if(self.doPingTest):
+            if self.ping_file_name not in os.listdir(self.path):
+                self.df_my_ping = pd.DataFrame(columns=["date", "min", "max", "avg", "url"])
+            else:
+                self.df_my_ping = pd.read_csv(self.ping_file_path, index_col=0)
 
         # Check if speed_test file already exists and create dataframe
-        if self.speed_test_file_name not in os.listdir(self.path):
-            self.df_my_speed = pd.DataFrame(
-                columns=["date", "ping", "downstream", "upstream", "serverState", "sponsor", "your_isp"])
-        else:
-            self.df_my_speed = pd.read_csv(self.speed_test_file_path, index_col=0)
+        if(self.doSpeedTest):
+            if self.speed_test_file_name not in os.listdir(self.path):
+                self.df_my_speed = pd.DataFrame(
+                    columns=["date", "ping", "downstream", "upstream", "serverState", "sponsor", "your_isp"])
+            else:
+                self.df_my_speed = pd.read_csv(self.speed_test_file_path, index_col=0)
 
     # Main-Part of speed check, take standard values, find best server (would be changeable to) and convert up/downstream
     def get_speed_results_as_df(self):
@@ -174,32 +176,33 @@ class NetworkTest:
 
     '''Function starts networktest in endless loop. To exit the loop and safe results Ctrl + C must be pressed twice '''
     def run_network_test(self):
-        if self.clear is True:
-            self.archiveFiles()
         print("#### Currently analyzing the network ####")
-        notSaved = False
+        newTest = True
         try:
             while True:
-                print("Thread Running " + str(time.time()))
+                # print("Thread Running " + str(time.time()))
                 msgForGui = 'Message from NetworkTest'
                 self.src.GUI_signal.emit(msgForGui)
                 if(self.runningTest):
                     print("Test is running")
-                    notSaved = True
+                    if(newTest):
+                        if self.clear is True:
+                            self.archiveFiles()
+                        self.createDataFrames()
+                        newTest = False
                     if(self.doPingTest):
                         self.df_my_ping = self.df_my_ping.append(self.get_ping_as_df(), ignore_index=True, sort=False)
                     if(self.doSpeedTest):
                         self.df_my_speed = self.df_my_speed.append(self.get_speed_results_as_df(), ignore_index=True, sort=False)
                 else:
-                    print("Test is not running")
-                    if(notSaved):
+                    if(newTest is False):
                         if(self.doPingTest):
                             print("Saving files to " + str(self.ping_file_path) + ".")
                             self.df_my_ping.to_csv(self.ping_file_path)
                         if(self.doSpeedTest):
                             print("Saving files to " + str(self.speed_test_file_path) + ".")
                             self.df_my_speed.to_csv(self.speed_test_file_path)
-                        notSaved = False
+                        newTest = True
                 time.sleep(self.interval)
 
         except Exception as e:
