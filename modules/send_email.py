@@ -39,8 +39,9 @@ class SendEmail:
             with open(os.path.join("webpage", "mail_format.html")) as report_file:
                 raw_html = report_file.readlines()
                 email_content_html_format = """""".join(raw_html)
-            
-            path_webpage_figures = os.path.join ("webpage", "figures")
+
+            # eventually check if ".." really change the path to one dir. level up!
+            path_webpage_figures = os.path.join ("..", "webpage", "figures")
             # network_speeds
             network_speeds_report_file = os.path.join(path_webpage_figures, 
                                                       "fig_network_speeds_under_upper_bound.html")
