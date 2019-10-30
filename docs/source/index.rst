@@ -21,6 +21,8 @@ Currently there are different types of Network Analysis available. You can choos
 .. toctree::
    :maxdepth: 2
 
+   license.rst
+
 Indices and tables
 ==================
 
