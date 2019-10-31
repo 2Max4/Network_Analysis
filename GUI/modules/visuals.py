@@ -34,7 +34,7 @@ class InteractivePlots:
         config = configparser.ConfigParser()
 
         try:
-            config.read('config_a.ini')
+            config.read('./modules/config_a.ini')
             # Get values from configuration file
             self.upper_acceptable_ping_bound = float(config['DEFAULT']['upper_acceptable_ping_bound'])
             self.upper_ping_issue_bound = float(config['DEFAULT']['upper_ping_issue_bound'])

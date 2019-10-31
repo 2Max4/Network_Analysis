@@ -116,6 +116,8 @@ class Screen(QDialog):
         self.setWindowTitle("Network Test")
         QApplication.setStyle(QStyleFactory.create('Fusion'))
 
+
+    # start test on button press. Read form fields, update variables and start test
     def startTest(self):
         print("Test Started")
         self.doPingTest = self.pingTestCheckbox.isChecked()

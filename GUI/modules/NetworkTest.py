@@ -8,6 +8,7 @@ from pythonping import ping
 import argparse
 import logging
 import traceback
+import configparser
 
 from PyQt5.QtCore import pyqtSignal, QObject
 
@@ -38,10 +39,25 @@ class NetworkTest:
 
         self.runningTest = False
 
+        self.readConfig()
         self.visuals = InteractivePlots(self.path, self.ping_file_path, self.speed_test_file_path)
 
         self.src = Communicate()
         self.src.GUI_signal.connect(callbackFunc)
+
+    def readConfig(self):
+        config = configparser.ConfigParser()
+
+        try:
+            config.read('./modules/config_a.ini')
+            # Get values from configuration file
+            self.save_every = float(config['DEFAULT']['save_every'])
+            self.ping_max_threshold = float(config['DEFAULT']['ping_max_threshold'])
+        except:
+            # In case no config-file is found or another reading error occured
+            print("Configuration file not found/readable.")
+            sys.exit(0)
+
 
     def updateTestVariables(self, updatedVariables):
         print(updatedVariables)
@@ -180,6 +196,7 @@ class NetworkTest:
     def run_network_test(self):
         print("#### Currently analyzing the network ####")
         newTest = True
+        lastSaved = time.time()
         try:
             while True:
                 # print("Thread Running " + str(time.time()))
@@ -192,10 +209,19 @@ class NetworkTest:
                             self.archiveFiles()
                         self.createDataFrames()
                         newTest = False
+                    test_result = self.get_ping_as_df()
                     if(self.doPingTest):
-                        self.df_my_ping = self.df_my_ping.append(self.get_ping_as_df(), ignore_index=True, sort=False)
+                        self.df_my_ping = self.df_my_ping.append(test_result, ignore_index=True, sort=False)
                     if(self.doSpeedTest):
-                        self.df_my_speed = self.df_my_speed.append(self.get_speed_results_as_df(), ignore_index=True, sort=False)
+                        # only perform speed test if ping max rtt greater than threshold so as not to consume excessive bandwidth
+                        if test_result["max"].max() > self.ping_max_threshold:
+                            self.df_my_speed = self.df_my_speed.append(self.get_speed_results_as_df(), ignore_index=True, sort=False)
+
+                    # save files every n seconds (defined in congif)
+                    if int(time.time() - lastSaved) > self.save_every:
+                        self.df_my_pingto_csv(self.ping_file_path)
+                        self.df_my_speed.to_csv(self.speed_test_file_path)
+                        lastSaved = time.time()
                 else:
                     if(newTest is False):
                         if(self.doPingTest):
