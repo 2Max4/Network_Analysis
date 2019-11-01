@@ -219,7 +219,7 @@ class NetworkTest:
 
                     # save files every n seconds (defined in congif)
                     if int(time.time() - lastSaved) > self.save_every:
-                        self.df_my_pingto_csv(self.ping_file_path)
+                        self.df_my_ping.to_csv(self.ping_file_path)
                         self.df_my_speed.to_csv(self.speed_test_file_path)
                         lastSaved = time.time()
                 else:
