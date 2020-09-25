@@ -1,4 +1,4 @@
-import network_test_class as ntc
+import modules.network_test_class as ntc
 
 my_ping_test = ntc.NetworkTest()
 # run network test in infinite loop

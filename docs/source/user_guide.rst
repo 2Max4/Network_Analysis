@@ -32,5 +32,5 @@ You'll need PyQt5 and other libraries from requirements.txt
 Running
 +++++++
 
-Navigate to GUI folder and run `python3 main_gui.py`
+Navigate to the project's root folder, and run `python3 network_qt5.py` with root priviledges.
 

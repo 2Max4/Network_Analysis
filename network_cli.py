@@ -1,5 +1,5 @@
 from threading import Thread
-import network_test_class as ntc
+import modules.network_test_class as ntc
 from modules.send_email import SendEmail
 from getpass import getpass
 

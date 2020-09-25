@@ -28,6 +28,7 @@ class NetworkTest:
         self.ping_target = defaults["ping_target"]
         self.threads = defaults["threads"]
         self.path = defaults["path"]
+        self.config_path = os.path.join(self.path, "modules", "config_a.ini")
         self.ping_file_name = defaults["ping_file_name"]
         self.speed_test_file_name = defaults["speed_test_file_name"]
         self.clear = defaults["clear"]
@@ -49,7 +50,7 @@ class NetworkTest:
         config = configparser.ConfigParser()
 
         try:
-            config.read('./modules/config_a.ini')
+            config.read(self.config_path)
             # Get values from configuration file
             self.save_every = float(config['DEFAULT']['save_every'])
             self.ping_max_threshold = float(config['DEFAULT']['ping_max_threshold'])

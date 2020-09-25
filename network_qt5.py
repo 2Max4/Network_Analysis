@@ -10,9 +10,9 @@ import time
 import threading
 import webbrowser
 
-from modules.NetworkTest import NetworkTest as ntc
+from GUI.modules.NetworkTest import NetworkTest as ntc
 
-FilePath = "./defaults.json"
+FilePath = os.path.join(".", "GUI", "defaults.json")
 
 def loadDefaults(FilePath):
     with open(FilePath) as data:

@@ -1,3 +1,4 @@
+import os
 import logging
 import traceback
 import smtplib
@@ -41,7 +42,7 @@ class SendEmail:
                 email_content_html_format = """""".join(raw_html)
 
             # eventually check if ".." really change the path to one dir. level up!
-            path_webpage_figures = os.path.join ("..", "webpage", "figures")
+            path_webpage_figures = os.path.join (".", "webpage", "figures")
 
             # network_speeds
             network_speeds_report_file = os.path.join(path_webpage_figures, 
