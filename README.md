@@ -1,5 +1,5 @@
 # Network_Analysis
-This project is still under development. The following guide helps to begin with the current state of project and will be updated soon.
+This project is still under development and will be maintained mainly during the Hacktoberfest. The following guide helps you to begin with the current state of project and will be continually updated. If you are looking for a project to contribute to during the Hacktoberfest you are highly welcome to join our project. See "Dev Guide" for more information.
 
 
 ## Purpose of the Project
